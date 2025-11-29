@@ -16,6 +16,7 @@ Ever wondered how you can tunnel whole system traffic through Tor? The answer is
 - Checks final IP Address and Location to make sure of connectivity and geo filters for exit nodes
 - Auto-cleanup on termination (SIGTERM) `ctrl+c`
 - Never touching Tor process, so script remains simple
+- Drops UDP connections to protect against WEBRTC or other UDP leaks (keeps DNS available through Tor)
 
 
 
@@ -57,6 +58,7 @@ sudo nano /etc/tor/torrc
 and add necessary configs in it :
 ```text
 User tor
+SOCKSPort 9050
 VirtualAddrNetwork 10.192.0.0/10
 AutomapHostsOnResolve 1
 TransPort 9040
@@ -72,7 +74,16 @@ The `User` value (`tor`) depends on your distro, in case you installed tor with 
 ```bash
 # start or restart tor
 sudo systemctl restart tor
-sudo torsh
+# you can also run it directly, but
+# better use systemd for compatibility
+sudo torsh config
+# if you need change config in your editor and finally close it
+sudo torsh connect
+```
+
+### Config File
+```bash
+nano /etc/torsh/torsh.conf
 ```
 
 ### Some Considerations
@@ -82,12 +93,7 @@ sudo torsh
 
 ## ToDo :
 
-- [ ] add check for Tor connectivity before doing anything
-- [ ] add config file support and remove manual script configuration
-- [ ] add dynamic config file generation by asking user  
-
-
-`Enough for next version`
+- Nothing For now...
 
 
 
